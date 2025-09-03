@@ -2,6 +2,7 @@ import { Inngest } from "inngest";
 import User from "../models/user.js"
 import Booking from "../models/Booking.js";
 import Show from "../models/Show.js";
+import sendEmail from "../configs/nodeMailer.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "movie-ticket-booking" });
@@ -83,5 +84,32 @@ const releaseSeatsAndDeleteBooking = inngest.createFunction(
 )
 
 
+// function to send email
+const sendBookingConfirmationEmail = inngest.createFunction(
+    {id:'send-booking-confirmation-email'},
+    {event:'app/show.booked'},
+    async ({event,step})=>{
+      const {bookingId} = event.data;
+      const booking = await Booking.findById(bookingId).populate({path:'show',populate:{path:'movie',model:'Movie'}}).populate('user');
 
-export const functions = [syncUserCreation,syncUserDeletion,syncUserUpdation, releaseSeatsAndDeleteBooking];
+      await sendEmail({
+        to: booking.user.email,
+        subject: `Booking Confirmation - "${booking.show.movie.title}" booked!`,
+        body: `<div style="font-family: Arial, sans-serif; line-height: 1.6;">
+          <h2 style="color: #333;">Hi ${booking.user.name},</h2>
+          <p>Thank you for booking with QuickShow! Your booking for the movie "<strong>${booking.show.movie.title}</strong>" has been confirmed.</p>
+          <p>
+          <strong>Date:</strong> ${new Date(booking.show.showDateTime).toLocaleDateString('en-US', {timeZone:'Asia/Kolkata'})}<br/>
+          <strong>Time:</strong> ${new Date(booking.show.showDateTime).toLocaleTimeString('en-US', {timeZone:'Asia/Kolkata'})}<br/>
+          </p>
+          <p>Enjoy your movie!</p>
+          <p>Best regards,<br/>The QuickShow Team</p>
+        </div>`,
+      })
+    }
+)
+
+
+
+
+export const functions = [syncUserCreation,syncUserDeletion,syncUserUpdation, releaseSeatsAndDeleteBooking, sendBookingConfirmationEmail];
