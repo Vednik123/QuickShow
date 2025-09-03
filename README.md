@@ -3,6 +3,8 @@
 QuickShow is a **full-stack MERN movie booking application** where users can browse movies, book tickets, and make secure payments. It also includes an **Admin Panel** to manage shows, track revenue, and monitor bookings.
 
 ---
+## 🌐 Live Demo
+[Visit QuickShow](https://quickshow-rosy-two.vercel.app/)
 
 ## 🚀 Features
 
@@ -34,4 +36,9 @@ QuickShow is a **full-stack MERN movie booking application** where users can bro
 - **Ingest:** Logging,payment confirmation,stats updation
 
 ---
+## Contact
+For any queries or suggestions, feel free to reach out:
+- **Name**: Vedant Nikam
+- **Email**: [nikam.vedant05@gmail.com]
+- **GitHub**: [https://github.com/Vednik123](https://github.com/Vednik123)
 
